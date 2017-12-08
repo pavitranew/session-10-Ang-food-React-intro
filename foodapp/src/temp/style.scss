@@ -1,0 +1,175 @@
+
+:root {
+  --blue: #007eb6;
+  --green: #3f504a;;
+}
+
+@import url("https://fonts.googleapis.com/css?family=Lobster");
+
+html {
+  box-sizing: border-box;
+  font-family: 'helvetica neue';
+  font-size: 20px;
+  font-weight: 200;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+body {
+  min-height: 100vh;
+  margin: 0;
+  background-color: var(--blue);
+}
+
+.wrap {
+  background: #eee;
+  max-width: 90%;
+  padding: 0.5rem;
+  margin: 1rem auto;
+
+  h1, 
+  h2 {
+    font-family: lobster;
+    margin-top: 0;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  li {
+    display: flex;
+    padding: 1rem;
+  }
+  li img {
+    width: 30%;
+    height: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    margin-right: 1rem;
+    background-color: #fff;
+    box-shadow: 2px 2px 4px #ccc;
+  }
+  li a {
+    color: #7e360d;
+    text-decoration: none;
+  }
+}
+
+.form-wrap {
+  form {
+    max-width:620px;
+    margin: 20px auto;
+  }
+
+  ol {
+    list-style: none;
+    padding: 0;
+  }
+  li, label {
+    display: block; /* was display:flex;*/
+  }
+  fieldset {
+    border:none;
+  }
+  legend {
+    font-size:24px;
+    margin-bottom:20px;
+  }
+  input, 
+  textarea {
+    border:1px solid #ccc;
+    font-size:20px;
+    min-width:480px;
+    min-height:30px;
+    display:block;
+    margin-bottom:16px;
+    margin-top:8px;
+    border-radius:5px;
+    transition: all 0.5s cubic-bezier(0.53,-0.49, 0.79, 1.59);
+  }
+  textarea {
+    min-height:100px;
+  }
+  *:focus{
+    outline: none;
+  }
+
+  input:focus, 
+  textarea:focus {
+    box-shadow: 0 0 25px #ccc;
+    transform: scale(1.05);
+  }
+
+  input:not(:focus), 
+  textarea:not(:focus) {
+    opacity: 0.5;
+  }
+  input:required, 
+  textarea:required {
+    background:url("/assets/asterisk_orange.png") no-repeat 95% 7px;  
+  }
+
+  input:valid, 
+  textarea:valid {
+    background:url("/assets/tick.png") no-repeat 95% 5px;     
+  }
+
+  input:focus:invalid, 
+  textarea:focus:invalid {
+    background:url("/assets/cancel.png") no-repeat 95% 7px;         
+  }
+  .alert { 
+    color: #fff;
+    background-color: red;
+
+  }
+
+  input[type=submit] {
+    color: #fff;
+    padding: 10px;
+    background: #007eb6;
+    opacity: 1.0;
+  }
+
+  input[type="number"], 
+  input[type="number"]:required, 
+  input[type="number"]:valid, 
+  input[type="number"]:focus:invalid {
+    background-position: 260px 7px; 
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

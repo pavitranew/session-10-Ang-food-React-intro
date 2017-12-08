@@ -5,6 +5,7 @@ import 'rxjs/add/operator/toPromise';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
 @Injectable()
+
 export class DataService {
 
 	recipe: Recipe;
@@ -22,6 +23,16 @@ export class DataService {
 	getRecipe(id) {
 		return this.http.get(`${this.apiUrl}recipe/${id}`).toPromise()
 	}
+
+	// putRecipe(recipe){
+	// 	console.log(recipe)
+	// 	return this.http.put(`${this.apiUrl}recipe/${recipe._id}, recipe`)toPromise()
+	// }
+
+	putRecipe(recipe) {
+  // console.log('service ' + recipe)
+  return this.http.put('http://localhost:3006/api/recipe/' + recipe._id, recipe).toPromise()
+}
 
 }
 

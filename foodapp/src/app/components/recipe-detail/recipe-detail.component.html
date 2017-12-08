@@ -1,4 +1,62 @@
-<h1>{{ recipe.title }}</h1>
-<img style="max-width: 30%" src="assets/home/{{ recipe?.image }}" />
-<p>{{ recipe?.description }}</p>
-<button (click)="back()">Back</button>
+<div *ngIf="!formEnabled">
+	<div *ngIf="recipe">
+		<h1>{{ recipe.title }}</h1>
+		<img style="max-width: 30%" src="assets/home/{{ recipe.image }}" />
+		<p>{{ recipe.description }}</p>
+		<button (click)="back()">Back</button>
+	</div>
+</div>
+
+<div *ngIf="formEnabled">
+	<div *ngIf="recipe">
+		<p>{{ recipe.title }}</p>
+
+		<form (submit)="editRecipe()" class="form-wrap">
+			<fieldset>
+				<legend>Edit Recipes</legend>
+				<ol>
+					<li>
+						<label for="name">Recipe Name</label>
+						<input 
+						[(ngModel)]="recipe.title" 
+						#recipeTitle="ngModel" 
+						minlength="3" 
+						type="text" 
+						name="name" 
+						required 
+						placeholder="recipe name" />
+
+						<div *ngIf="recipeTitle.errors?.required && recipeTitle.touched" class="alert">Title is required</div>
+						<div *ngIf="recipeTitle.errors?.minlength && recipeTitle.touched" class="alert">Recipe title should be longer</div>
+
+
+					</li>
+
+					<li>
+						<label for="image">Recipe Image</label>
+						<input [(ngModel)]="recipe.image" type="text" name="image" required placeholder="recipe image" />
+					</li>
+
+					<li>
+						<label for="description">Recipe Description</label>
+						<input [(ngModel)]="recipe.description" type="text" name="description" required placeholder="recipe description" />
+					</li>
+					<li>
+						<input type="submit" value="Update Recipe" />
+					</li>
+				</ol>
+			</fieldset>
+		</form>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
