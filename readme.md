@@ -48,7 +48,7 @@ import { FormsModule } from '@angular/forms';
   ],
 ```
 
-Review:
+## Binding
 
 1: *html Binding  DOM > Component* works for any HTML attribute:
 
@@ -56,13 +56,11 @@ Review:
 
 `<img [src]="vehicle.imageUrl">`
 
-2: *Event Binding  DOM > Component* 
+2: *Event Binding  DOM > Component*
 
-Was `ng-click` in Angular 1.
+In Angular 2 `(click)` (was `ng-click` in Angular 1)
 
-In Angular 2 `(click)`
-
-3: *Two Way Binding  DOM < > Component* e.g. `ng-model`. 
+3: *Two Way Binding  DOM < > Component* e.g. `ng-model`.
 
 In Angular 2 we use hotdogs (or a football in a box):
 
@@ -77,9 +75,10 @@ We use *ngIf to toggle a form on the detail page which will allow us to edit a r
 ```js
 formEnabled: boolean;
 
-constructor(public dataService: DataService, public route: ActivatedRoute) {
-  this.formEnabled = true;
-}
+  constructor(public dataService: DataService, public route: ActivatedRoute) {
+    this.formEnabled = false;
+    this.id = this.route.snapshot.params['id'];
+  }
 ```
 
 ```html
@@ -93,36 +92,35 @@ constructor(public dataService: DataService, public route: ActivatedRoute) {
 </div>
 ```
 
-
 ```html
-  <div class="form-wrapper">
-    <form action="#" method="post" > 
-    
-      <fieldset>
-        <legend>Edit Recipe</legend>
-        <ol>
-          <li>
-            <label for="name">Recipe Title</label>
-            <input [(ngModel)]="recipe.title" type="text" name="name" required placeholder="Recipe Name" />
-          </li>
-          <li>
-            <label for="image">Image</label>
-            <input [(ngModel)]="recipe.image" type="text" name="image" required placeholder="Image Name" />
-          </li>
-          <li>
-            <label for="description">Recipe Description</label> 
-            <textarea [(ngModel)]="recipe.description" name="description" required></textarea>
-          </li>
-          <li>
-            <input type="submit" value="Update Recipe" />
-          </li>
-        </ol>
-      </fieldset>
-    </form>
-  </div>  
+<div class="form-wrapper">
+  <form action="#" method="post" >
+
+    <fieldset>
+      <legend>Edit Recipe</legend>
+      <ol>
+        <li>
+          <label for="name">Recipe Title</label>
+          <input [(ngModel)]="recipe.title" type="text" name="name" required placeholder="Recipe Name" />
+        </li>
+        <li>
+          <label for="image">Image</label>
+          <input [(ngModel)]="recipe.image" type="text" name="image" required placeholder="Image Name" />
+        </li>
+        <li>
+          <label for="description">Recipe Description</label>
+          <textarea [(ngModel)]="recipe.description" name="description" required></textarea>
+        </li>
+        <li>
+          <input type="submit" value="Update Recipe" />
+        </li>
+      </ol>
+    </fieldset>
+  </form>
+</div>
 ```
 
-Tet two way binding by adding this to the form:
+Test two way binding by adding this to the form:
 
 `<p>{{ recipe.title }}</p>`
 
@@ -134,7 +132,7 @@ Create a sass directory in src and styles.scss within.
 
 * .angular-cli.json
 
-```
+```js
 "styles": [
   "sass/styles.css"
 ],
@@ -164,7 +162,7 @@ See [this article](https://scotch.io/tutorials/using-sass-with-the-angular-cli) 
     font-size:24px;
     margin-bottom:20px;
   }
-  input, 
+  input,
   textarea {
     border:1px solid #ccc;
     font-size:20px;
@@ -188,13 +186,13 @@ See [this article](https://scotch.io/tutorials/using-sass-with-the-angular-cli) 
   outline: none;
 }
 
-input:focus, 
+input:focus,
 textarea:focus {
   box-shadow: 0 0 25px #ccc;
   transform: scale(1.05);
 }
 
-input:not(:focus), 
+input:not(:focus),
 textarea:not(:focus) {
   opacity: 0.5;
 }
@@ -206,19 +204,19 @@ Native browser validation
 * required, valid, invalid
 
 ```css
-input:required, 
+input:required,
 textarea:required {
-  background:url("/assets/asterisk_orange.png") no-repeat 280px 7px;  
+  background:url("/assets/asterisk_orange.png") no-repeat 280px 7px;
 }
 
-input:valid, 
+input:valid,
 textarea:valid {
-  background:url("/assets/tick.png") no-repeat 280px 5px;     
+  background:url("/assets/tick.png") no-repeat 280px 5px;
 }
 
-input:focus:invalid, 
+input:focus:invalid,
 textarea:focus:invalid {
-  background:url("/assets/cancel.png") no-repeat 280px 7px;         
+  background:url("/assets/cancel.png") no-repeat 280px 7px;
 }
 ```
 
@@ -234,11 +232,11 @@ input[type=submit] {
   opacity: 1.0;
 }
 
-input[type="number"], 
-input[type="number"]:required, 
-input[type="number"]:valid, 
+input[type="number"],
+input[type="number"]:required,
+input[type="number"]:valid,
 input[type="number"]:focus:invalid {
-  background-position: 260px 7px; 
+  background-position: 260px 7px;
 }
 ```
 
@@ -256,13 +254,13 @@ Add rudimentary feedback:
 <li>
   <label for="name">Recipe Name</label>
 
-  <input 
-  [(ngModel)]="recipe.title" 
-  #recipeTitle="ngModel" 
-  minlength="2" 
-  type="text" 
-  name="name" 
-  required 
+  <input
+  [(ngModel)]="recipe.title"
+  #recipeTitle="ngModel"
+  minlength="2"
+  type="text"
+  name="name"
+  required
   placeholder="Recipe Name" />
 
   <div *ngIf="recipeTitle.errors?.required && recipeTitle.touched" class="alert">Title is required</div>
@@ -350,7 +348,7 @@ We will do this from the edit recipe page.
 
 Add a delete button.
 
-* recipe-detail.component 
+* recipe-detail.component
 
 ```js
 async deleteRecipe(){
@@ -371,7 +369,7 @@ async deleteRecipe(){
 
 I suggest adding a recipe from the recipe list page.
 
-Here is a starter form for use. Note the `value="{{ test }}"` 
+Here is a starter form for use. Note the `value="{{ test }}"`
 
 ```html
 <div *ngIf="add">
@@ -381,12 +379,12 @@ Here is a starter form for use. Note the `value="{{ test }}"`
         <ol>
           <li>
             <label for="name">Recipe Name</label>
-            <input 
+            <input
             value="{{ test }}"
-            minlength="3" 
-            type="text" 
-            name="name" 
-            required 
+            minlength="3"
+            type="text"
+            name="name"
+            required
             placeholder="Recipe Name" />
           </li>
           <li>
@@ -394,7 +392,7 @@ Here is a starter form for use. Note the `value="{{ test }}"`
             <input type="text" name="image" required placeholder="Image Name" />
           </li>
           <li>
-            <label for="description">Recipe Description</label> 
+            <label for="description">Recipe Description</label>
             <textarea name="description" required></textarea>
           </li>
           <li>
@@ -447,7 +445,7 @@ Add two way binding
 ```html
 <li>
   <label for="name">Recipe Title</label>
-  <input 
+  <input
   [(ngModel)]="title"
 
   ...
@@ -471,14 +469,14 @@ See homework assignment above.
 
 ng g component components/nav
 
-```
+```html
 <app-nav></app-nav>
 <div class="wrap">
   <router-outlet></router-outlet>
 </div>
 ```
 
-```
+```html
 <nav>
   <h1>Yum Yum!</h1>
   <ul>
@@ -490,7 +488,7 @@ ng g component components/nav
 </nav>
 ```
 
-```
+```js
 const appRoutes: Routes = [
   { path: '', component: HomeComponent, pathMatch: "full"},
   { path: 'recipes', component: RecipesComponent},
@@ -502,22 +500,22 @@ const appRoutes: Routes = [
 
 Rudimentary formatting
 
-```
+```css
 nav {
   display: flex;
   background: #000;
   align-items: center;
 }
 nav h1 {
-   color: #fff; 
-   font-family: Lobster; 
+   color: #fff;
+   font-family: Lobster;
    white-space: nowrap;
 }
 nav ul {
   width:100%;
   display: flex;
   list-style: none;
-  justify-content: space-around; 
+  justify-content: space-around;
   font-family: Lobster;
 }
 nav il {
@@ -532,43 +530,36 @@ nav a {
 
 To use routerLink elsewhere in our app we need to bind the routerLink. E.g.:
 
-```
+```html
 <!-- <h2><a href="recipe/{{ recipe._id }}">{{ recipe.title }}</a></h2> -->
 <h2><a [routerLink]="['/recipe', recipe._id]">{{ recipe.title }}</a></h2>
 ```
-
-
-
-
-
-
-
 
 # React
 
 ## React Classes
 
-```
-$ sudo npm install -g create-react-app
+```sh
+sudo npm install -g create-react-app
 ```
 
 See also: [Create Angular App](https://cli.angular.io)
 
-```
-$ create-react-app react-pirates
-```
-
-```
-$ cd react-pirates
+```sh
+create-react-app react-pirates
 ```
 
+```sh
+cd react-pirates
 ```
+
+```sh
 npm run start
 ```
 
-Danger- do not do this! Demo only! 
+Danger- do not do this! Demo only!
 
-```
+```sh
 > git init
 > git add .
 > git commit -m 'testing'
@@ -604,7 +595,6 @@ Comments:
 
 `{ /* comment */ }`
 
-
 ## Additional Installs
 
 1. [React developer tools for Chrome](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en). Adds a tab to dev tools in Chrome (or Firefox).
@@ -622,7 +612,7 @@ Provide the logo.
 
 App.css:
 
-```
+```css
 .App-header {
   background-color: #eee;
   height: 150px;
@@ -639,7 +629,7 @@ Create a component.
 
 * Pirate.js
 
-```
+```js
 import React, { Component } from 'react';
 
 class Pirate extends React.Component {
@@ -655,23 +645,23 @@ export default Pirate;
 
 * App.js
 
-```
+```js
 import Pirate from './Pirate';
 ```
 
-```
+```js
 <Pirate tagline="Ahoy there Matey!" />
 ```
 
 * Pirate.js
 
-```
+```html
 <p>{this.props.tagline}</p>
 ```
 
 e.g.
 
-```
+```html
 <div>
   <p>Pirate Component</p>
   <p>{this.props.tagline}</p>
@@ -774,7 +764,7 @@ Method - createPirate
 
 `<form onSubmit={(e) => this.createPirate(e)}>`:
 
-```
+```js
     return (
       <form onSubmit={(e) => this.createPirate(e)}>
       <input type="text" placeholder="Pirate name" />
@@ -787,7 +777,7 @@ Method - createPirate
 
 In AddPirateForm (above render:
 
-```
+```js
 createPirate(event) {
   event.preventDefault();
   console.log('make a pirate')
@@ -798,7 +788,7 @@ Test.
 
 Add refs to the form to store references to the input:
 
-```
+```html
 <form onSubmit={(e) => this.createPirate(e)}>
 <input ref={(input) => this.name = input } type="text" placeholder="Pirate name" />
 <input ref={(input) => this.vessel = input } type="text" placeholder="Pirate vessel" />
@@ -813,7 +803,7 @@ Create the pirate const variable
 
 AddPirateForm:
 
-```
+```js
   createPirate(event) {
     event.preventDefault();
     console.log('make a pirate');
@@ -834,7 +824,7 @@ The key difference between props and state is that state is internal and control
 
 App.js:
 
-```
+```js
 class App extends Component {
 
   constructor() {
@@ -849,7 +839,7 @@ React tools, find App, view state.
 
 App.js:
 
-```
+```js
   addPirate(pirate){
     //update state
     const pirates = {...this.state.pirates}
@@ -865,7 +855,7 @@ Bind the add form to our app.
 
 App.js:
 
-```
+```js
   constructor() {
     super();
     this.addPirate = this.addPirate.bind(this);
@@ -877,7 +867,7 @@ App.js:
 
 note - bind() - creates a new function that, when called, has its `this` keyword set to the provided value.
 
-```
+```js
 var foo = {
     x: 3
 }
@@ -893,17 +883,17 @@ var boundFunc = bar.bind(foo);
 boundFunc(); // 3
 ```
 
-Test with: 
+Test with:
 
-$r.addPirate({name: 'joe'})
+`$r.addPirate({name: 'joe'})`
 
 Make the addPirate function available to components with props.
 
 Pass the prop down to PirateForm:
 
-`<PirateForm addPirate={this.addPirate} />`:  
+`<PirateForm addPirate={this.addPirate} />`:
 
-```
+```js
 return (
       <div className="App">
         <div className="App-header">
@@ -926,7 +916,7 @@ PirateForm:
 
 `<AddPirateForm addPirate={this.props.addPirate} />`:
 
-```
+```js
   render(){
     return (
       <div>
@@ -943,7 +933,7 @@ AddPirateForm:
 
 `this.props.addPirate(pirate);`
 
-```
+```js
   createPirate(event) {
     event.preventDefault();
     console.log('make a pirate');
@@ -955,12 +945,6 @@ AddPirateForm:
     this.props.addPirate(pirate);
   }
 ```
-
-
-
-
-
-
 
 # STOP HERE - move to session-10 for better notes
 
@@ -1942,7 +1926,7 @@ ReactDOM.render(
 
 Use Header.js as a template
 
-```
+```js
 import React, { Component } from 'react'
 
 class PirateDetail extends Component {
@@ -1960,7 +1944,7 @@ export default PirateDetail;
 
 `<Route path="/pirate/:pid" component={PirateDetail} />`:
 
-```
+```js
 import PirateDetail from './PirateDetail';
 
 class Main extends React.Component {
@@ -1978,11 +1962,6 @@ class Main extends React.Component {
 ```
 
 We probably want the routing to occur in App.js to keep the header and replace <Pirate /> and PirateForm />
-
-
-
-
-
 
 ### Validation Homework
 
@@ -2033,7 +2012,7 @@ Note the svg.
 ```css
 .error {
   color: red;
-} 
+}
 
 label {
   display: flex;
@@ -2054,7 +2033,7 @@ https://www.sitepoint.com/closer-look-svg-path-data/
 
 Ref: this video from [frontend.center](https://www.youtube.com/watch?v=af4ZQJ14yu8).
 
-```
+```css
 input:focus {
   outline: none;
   border-color: hsl(0%, 0%, 25%)
@@ -2094,7 +2073,7 @@ input:focus + .icon {
 
 Using the dash effect:
 
-```
+```css
 .icon {
   width: 1rem;
   // opacity: 0;
@@ -2118,59 +2097,4 @@ input:focus + .icon {
 }
 ```
 
-
 See https://www.w3schools.com/angular/angular_validation.asp for a complete set of examples for Angular validation.
-
-
-
-
-
-
-### Notes
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,4 +1,34 @@
-<h1>{{ recipe.title }}</h1>
-<img style="max-width: 30%" src="assets/home/{{ recipe?.image }}" />
-<p>{{ recipe?.description }}</p>
-<button (click)="back()">Back</button>
+<div *ngIf="!formEnabled">
+  <div *ngIf="recipe">
+    <h1> {{ recipe.title }}</h1>
+    <img style="max-width: 30%" src="assets/home/{{ recipe.image }}" />
+    <p>{{ recipe.description }}</p>
+    <button (click)="back()">Back</button>
+  </div>
+</div>
+
+<div class="form-wrapper">
+  <form action="#" method="post" >
+
+    <fieldset>
+      <legend>Edit Recipe</legend>
+      <ol>
+        <li>
+          <label for="name">Recipe Title</label>
+          <input [(ngModel)]="recipe.title" type="text" name="name" required placeholder="Recipe Name" />
+        </li>
+        <li>
+          <label for="image">Image</label>
+          <input [(ngModel)]="recipe.image" type="text" name="image" required placeholder="Image Name" />
+        </li>
+        <li>
+          <label for="description">Recipe Description</label>
+          <textarea [(ngModel)]="recipe.description" name="description" required></textarea>
+        </li>
+        <li>
+          <input type="submit" value="Update Recipe" />
+        </li>
+      </ol>
+    </fieldset>
+  </form>
+</div>
