@@ -93,30 +93,34 @@ formEnabled: boolean;
 ```
 
 ```html
-<div class="form-wrapper">
-  <form action="#" method="post" >
+<div *ngIf="formEnabled">
+  <div *ngIf="recipe">
+    <div class="form-wrapper">
+      <form action="#" method="post" >
 
-    <fieldset>
-      <legend>Edit Recipe</legend>
-      <ol>
-        <li>
-          <label for="name">Recipe Title</label>
-          <input [(ngModel)]="recipe.title" type="text" name="name" required placeholder="Recipe Name" />
-        </li>
-        <li>
-          <label for="image">Image</label>
-          <input [(ngModel)]="recipe.image" type="text" name="image" required placeholder="Image Name" />
-        </li>
-        <li>
-          <label for="description">Recipe Description</label>
-          <textarea [(ngModel)]="recipe.description" name="description" required></textarea>
-        </li>
-        <li>
-          <input type="submit" value="Update Recipe" />
-        </li>
-      </ol>
-    </fieldset>
-  </form>
+        <fieldset>
+          <legend>Edit Recipe</legend>
+          <ol>
+            <li>
+              <label for="name">Recipe Title</label>
+              <input [(ngModel)]="recipe.title" type="text" name="name" required placeholder="Recipe Name" />
+            </li>
+            <li>
+              <label for="image">Image</label>
+              <input [(ngModel)]="recipe.image" type="text" name="image" required placeholder="Image Name" />
+            </li>
+            <li>
+              <label for="description">Recipe Description</label>
+              <textarea [(ngModel)]="recipe.description" name="description" required></textarea>
+            </li>
+            <li>
+              <input type="submit" value="Update Recipe" />
+            </li>
+          </ol>
+        </fieldset>
+      </form>
+    </div>
+  </div>
 </div>
 ```
 
@@ -326,7 +330,7 @@ app.use((req, res, next) => {
 })
 ```
 
-Set the formEnabled flag component.
+Set the `formEnabled` flag component.
 
 * recipe-detail.component:
 
@@ -360,9 +364,9 @@ async deleteRecipe(){
 * data.service
 
 ```js
-  deleteRecipe(recipe){
-    return this.http.delete(`${this.apiUrl}recipe/${recipe._id}`).toPromise();
-  }
+deleteRecipe(recipe){
+  return this.http.delete(`${this.apiUrl}recipe/${recipe._id}`).toPromise();
+}
 ```
 
 ## Adding a Recipe - Notes
@@ -402,8 +406,8 @@ Here is a starter form for use. Note the `value="{{ test }}"`
       </form>
     </div>
   </div>
-
   <button (click)="addOne()">Add Recipe</button>
+
 ```
 
 Create a boolean that will display the form.
@@ -413,11 +417,74 @@ this.add = true;
 ...
 
 addOne(){
-  this.add = true;
+  this.add = !this.add;
 }
 ```
 
-One way communication
+Add submit, mgModel
+
+```html
+<div *ngIf="add">
+  <div class="form-wrapper">
+    <form (ngSubmit)="addRecipe(f)" #f="ngForm">
+    <legend>Add Recipe</legend>
+      <ol>
+        <li>
+          <label for="name">Recipe Name</label>
+          <input
+          ngModel
+          minlength="3"
+          type="text"
+          name="name"
+          required
+          placeholder="Name" />
+        </li>
+        <li>
+          <label for="image">Image</label>
+          <input type="text"
+          ngModel
+          name="image" r
+          required
+          placeholder="Image Name" />
+        </li>
+        <li>
+          <label for="description">Recipe Description</label>
+          <textarea
+          ngModel
+          name="description"
+          required>
+          </textarea>
+        </li>
+        <li>
+          <input type="submit" value="Add Recipe" />
+        </li>
+      </ol>
+    </form>
+  </div>
+</div>
+```
+
+Import NgForm into the component
+
+```js
+import { NgForm } from '@angular/forms';
+
+...
+
+async addRecipe(form: NgForm){
+  const response =  await this.dataService.addRecipe(form.value)
+}
+```
+
+Create the function in the service:
+
+```js
+addRecipe(recipe){
+  return this.http.post(`${this.apiUrl}recipe/`, recipe).toPromise();
+}
+```
+
+<!-- One way communication
 
 In input:
 
@@ -429,7 +496,6 @@ In component:
 title:string;
 
 ...
-
 
 this.title = 'test'
 ```
@@ -463,11 +529,16 @@ addRecipe(){
 }
 ```
 
-See homework assignment above.
+See homework assignment above. -->
 
 ## Adding a Navbar
 
+```sh
 ng g component components/nav
+ng g component components/home
+ng g component components/reviews
+ng g component components/delivery
+```
 
 ```html
 <app-nav></app-nav>
@@ -535,7 +606,7 @@ To use routerLink elsewhere in our app we need to bind the routerLink. E.g.:
 <h2><a [routerLink]="['/recipe', recipe._id]">{{ recipe.title }}</a></h2>
 ```
 
-# React
+## React Comparison
 
 ## React Classes
 
@@ -818,7 +889,7 @@ AddPirateForm:
 
 Test.
 
-Get the pirate object into state. 
+Get the pirate object into state.
 
 The key difference between props and state is that state is internal and controlled by the component itself while props are external and controlled by whatever renders the component. - [ref](http://buildwithreact.com/tutorial/state)
 
@@ -946,15 +1017,15 @@ AddPirateForm:
   }
 ```
 
-# STOP HERE - move to session-10 for better notes
+## STOP HERE - move to session-10 for better notes
 
-#### Use the form to add a pirate.
+### Use the form to add a pirate
 
 Empty the form with a ref.
 
 `<form ref={(input)=>this.pirateForm = input } onSubmit={(e) => this.createPirate(e)}>`:
 
-```
+```js
     return (
       <form ref={(input)=>this.pirateForm = input } onSubmit={(e) => this.createPirate(e)}>
       <input ref={(input) => this.name = input } type="text" placeholder="Pirate name" />
@@ -967,7 +1038,7 @@ Empty the form with a ref.
 
 and `this.pirateForm.reset();`:
 
-```
+```js
 createPirate(event) {
     event.preventDefault();
     console.log('make a pirate');
@@ -987,7 +1058,7 @@ PirateForm:
 
 `<button onClick={this.loadSamples}>Load Sample Pirates</button>`:
 
-```
+```js
     return (
       <div>
       <h3>Pirate Forms</h3>
@@ -1001,7 +1072,7 @@ App.js
 
 `import samplePirates from './sample-pirates'`
 
-```
+```js
   loadSamples(){
     this.setState({
       pirates: samplePirates
@@ -1009,7 +1080,7 @@ App.js
   }
 ```
 
-```
+```js
   constructor() {
     super();
     this.addPirate = this.addPirate.bind(this);
@@ -1020,10 +1091,9 @@ App.js
   }
 ```
 
-
 `<PirateForm addPirate={this.addPirate} loadSamples={this.loadSamples} />`:
 
-```
+```js
 return (
   <div className="App">
     <div className="App-header">
@@ -1042,7 +1112,7 @@ Loading the pirates
 
 App.js:
 
-```
+```html
 <ul>
   <Pirate />
 </ul>
@@ -1050,7 +1120,7 @@ App.js:
 
 Pirate.js:
 
-```
+```js
 import React, { Component } from 'react';
 
 class Pirate extends React.Component {
@@ -1083,7 +1153,7 @@ App.js:
 
 `{Object.keys(this.state.pirates)}`
 
-```
+```js
 return (
   <div className="App">
     <div className="App-header">
@@ -1098,7 +1168,7 @@ return (
 );
 ```
 
-```
+```js
 <ul>
 {
   Object
@@ -1110,7 +1180,7 @@ return (
 
 Pirate.js:
 
-```
+```js
   render(){
     const {details} = this.props;
     return (
@@ -1125,52 +1195,50 @@ Pirate.js:
 
 Load sample pirates.
 
-
-
 ### Notes
-http://cmder.net
+
+`http://cmder.net`
+
 cmd-e for Emmet expansion
 
+## Session Ten
 
-# Session Ten
-
-## Homework
+## Homework Alt
 
 Review session Ten notes. Use the additional data in sample-pirates.js in Pirate.js including the pirate avatar image.
 
 ## Reading
 
-
-```
-$ cd <react-pirates>
-$ subl . 
+```sh
+cd <react-pirates>
+subl .
 ```
 
 .gitignore
 
-```
-$ git init
-$ git branch dev
-$ git checkout dev
-$ npm install 
-$ npm run start
+```sh
+git init
+git branch dev
+git checkout dev
+npm install
+npm run start
 ```
 
-Download MS Code - https://code.visualstudio.com
+Download MS Code - `https://code.visualstudio.com`
 
 ### JSX
 
 App.js > Header.js:
 
 1. logo: {logo}: JSX
-3. class → className: JSX
-4. xhtml style closing tags: JSX
+1. class → className: JSX
+1. xhtml style closing tags: JSX
 
-Examine CSS: 
+Examine CSS:
 
 1. injected via Webpack:`<style>`
-2. multiple `<style>` tags (advantages?)
-3. note prefixing in output
+1. multiple `<style>` tags (advantages?)
+1. note prefixing in output
 
 Nesting:
 
@@ -1178,11 +1246,11 @@ Add `<p>test</p>` above div in Header.js
 
 Comments:
 
-`{/* <img src={logo} className="logo" alt="logo" /> */}` 
+`{/* <img src={logo} className="logo" alt="logo" /> */}`
 
 Demo: jc + TAB
 
-See http://wesbos.com/react-jsx-comments/
+See `http://wesbos.com/react-jsx-comments/`
 
 Note - to use Emmet run - `ctrl-e`
 
@@ -1190,13 +1258,13 @@ Note - to use Emmet run - `ctrl-e`
 
 App.js:
 
-```
+```html
 <Pirate tagline="Ahoy there Matey!" />
 ```
 
 Pirate.js:
 
-```
+```html
 <p>{this.props.tagline}</p>
 ```
 
@@ -1206,10 +1274,9 @@ Native: `$0`
 
 React: `$r`
 
-Select <Pirate />
+Select `<Pirate />`
 
 Console: `$r.props`
-
 
 <!-- ### Adding Pirates
 
@@ -1217,15 +1284,13 @@ PirateForm.js:
 
 `import samplePirates from './sample-pirates';` -->
 
-
-
-### State / Data binding
+### State / Data binding Alt
 
 In AddPirateForm.js we created a method - createPirate()
 
 And within, a pirate variable:
 
-```
+```js
   createPirate(event){
     event.preventDefault()
     console.log('making a pirate')
@@ -1242,7 +1307,7 @@ Added [refs](https://facebook.github.io/react/docs/refs-and-the-dom.html) to the
 
 When we submit we need to put the contents of the form into our const pirate object.
 
-```
+```html
 <form onSubmit={(e) => this.createPirate(e)}>
 <input ref={(input) => this.name = input } type="text" placeholder="Pirate name" />
 <input ref={(input) => this.vessel = input } type="text" placeholder="Pirate vessel" />
@@ -1253,14 +1318,13 @@ When we submit we need to put the contents of the form into our const pirate obj
 
 Go to React dev tools, find AddPirateForm component, $r in the console to see the inputs.
 
-
-### Get the pirate object into state. 
+### Get the pirate object into state
 
 The key difference between props and state is that state is internal and controlled by the component itself, while props are external and controlled by whatever renders the component. - [ref](http://buildwithreact.com/tutorial/state)
 
 We started with App.js:
 
-```
+```js
 class App extends Component {
 
   constructor() {
@@ -1275,7 +1339,7 @@ React tools, find App, view state.
 
 And added to App.js:
 
-```
+```js
   addPirate(pirate){
     //update state
     const pirates = {...this.state.pirates}
@@ -1291,12 +1355,11 @@ For spread operator see:
 
 `reference / spread-operator.html`
 
-
 Bind the add form to our app.
 
 App.js:
 
-```
+```js
   constructor() {
     super();
     this.addPirate = this.addPirate.bind(this);
@@ -1314,12 +1377,11 @@ Review super in classes:
 
 Note - bind() - creates a new function that, when called, has its `this` keyword set to the provided value.
 
-See: 
+See:
 
 `reference / bind / index.html`
 
 `reference / bind / button.html`
-
 
 ### State
 
@@ -1327,9 +1389,7 @@ Test with App in React tool:
 
 $r.addPirate({name: 'joe'})
 
-
 ///// End Review
-
 
 ### Passing Props
 
@@ -1337,9 +1397,9 @@ We need to make the addPirate function available to AddPirateForm with props.
 
 To PirateForm from App.js:
 
-`<PirateForm addPirate={this.addPirate} />`:  
+`<PirateForm addPirate={this.addPirate} />`:
 
-```
+```js
   render() {
     return (
       <div className="App">
@@ -1359,7 +1419,7 @@ In PirateForm.js:
 
 `<AddPirateForm addPirate={this.props.addPirate} />`:
 
-```
+```js
 import React, { Component } from 'react';
 import AddPirateForm from './AddPirateForm'
 
@@ -1379,12 +1439,11 @@ export default PirateForm;
 
 Examine AddPirateForm props
 
-
 AddPirateForm:
 
 `this.props.addPirate(pirate);`
 
-```
+```js
   createPirate(event) {
     event.preventDefault();
     console.log('make a pirate');
@@ -1397,13 +1456,13 @@ AddPirateForm:
   }
 ```
 
-#### Use the form to add a pirate.
+#### Use the form to add a pirate alt
 
 Empty the form with a [ref](https://facebook.github.io/react/docs/refs-and-the-dom.html#adding-a-ref-to-a-class-component).
 
 `<form ref={ (input)=>this.pirateForm = input } onSubmit={(e) => this.createPirate(e)}>`:
 
-```
+```js
     return (
       <form ref={(input)=>this.pirateForm = input } onSubmit={(e) => this.createPirate(e)}>
       <input ref={(input) => this.name = input } type="text" placeholder="Pirate name" />
@@ -1416,7 +1475,7 @@ Empty the form with a [ref](https://facebook.github.io/react/docs/refs-and-the-d
 
 and `this.pirateForm.reset();`:
 
-```
+```js
 createPirate(event) {
     event.preventDefault()
     console.log('make a pirate')
@@ -1436,7 +1495,7 @@ The form should now empty.
 
 Pirate.js:
 
-```
+```js
 import React, { Component } from 'react'
 import './css/Pirate.css'
 
@@ -1461,7 +1520,7 @@ Unlike Angular there are no built in loops, repeats etc. You must use regular JS
 
 Examine sample json file. Make a folder called `data` in `src`.
 
-JSON.stringify(<data-that-you-want-to-stringify>,<replacer-function-null>,<indentation>)
+`JSON.stringify(<data-that-you-want-to-stringify>,<replacer-function-null>,<indentation>)`
 
 Pirate.js:
 
@@ -1469,7 +1528,7 @@ Pirate.js:
 
 `<pre><code>{ JSON.stringify(piratesFile, null, 4)}</code></pre>`:
 
-```
+```js
 import React, { Component } from 'react'
 import './css/Pirate.css'
 import piratesFile from './data/sample-pirates'
@@ -1491,11 +1550,11 @@ export default Pirate;
 
 With Array.map():
 
-array.map(<function that applies to each item in the array>) to create components
+`array.map(<function that applies to each item in the array>)` to create components
 
 Example: Doubling numbers:
 
-```
+```sh
 > var numbers = [1,5,8]
 > numbers
 > numbers.map(function(number){return number * 2})
@@ -1508,7 +1567,7 @@ See also [session-1](https://github.com/mean-spring-2017/session-1/blob/master/_
 
 Pirate.js:
 
-```
+```js
 render(){
   return (
     <ul>
@@ -1528,7 +1587,7 @@ render(){
 
 Switch the json out for the .js version of samples, remove the import (`import piratesFile from './data/sample-pirates'`) and rollback to:
 
-```
+```js
 class Pirate extends React.Component {
   render(){
     return (
@@ -1542,7 +1601,7 @@ class Pirate extends React.Component {
 
 App.js
 
-```
+```js
 import piratesFile from './data/sample-pirates'
 ```
 
@@ -1552,9 +1611,9 @@ For this version of sample-pirates we cannot easily use .map which is for Arrays
 
 Use `Object.keys()`  [Mozilla](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys)
 
-Find App component in React tool. 
+Find App component in React tool.
 
-In console: 
+In console:
 
 `> $r.state.pirates`
 
@@ -1564,7 +1623,7 @@ App.js:
 
 `{Object.keys(this.state.pirates)}` :
 
-```
+```js
 return (
   <div className="App">
     <Header />
@@ -1578,7 +1637,7 @@ return (
 
 Now that we have an Array:
 
-```
+```js
 <ul>
 {
   Object
@@ -1590,7 +1649,7 @@ Now that we have an Array:
 
 Pirate.js:
 
-```
+```js
 render(){
   return (
     <ul>
@@ -1602,7 +1661,7 @@ render(){
 
 Simplify and add a few more properties:
 
-```
+```js
   render(){
     const {details} = this.props;
     return (
@@ -1615,14 +1674,13 @@ Simplify and add a few more properties:
   }
 ```
 
-
 ### Load sample data via PirateForm
 
 PirateForm:
 
 `<button onClick={this.props.loadSamples}>Load Sample Pirates</button>`:
 
-```
+```js
   render() {
     return (
       <div className="pirate-form">
@@ -1638,7 +1696,7 @@ App.js:
 
 We've alreay imported: `import piratesFile from './sample-pirates'`
 
-```
+```js
 loadSamples(){
   this.setState({
     pirates: piratesFile
@@ -1646,7 +1704,7 @@ loadSamples(){
 }
 ```
 
-```
+```js
   constructor() {
     super();
     this.addPirate = this.addPirate.bind(this)
@@ -1659,7 +1717,7 @@ loadSamples(){
 
 We can use the button in App.js:
 
-```
+```html
 <button onClick={this.loadSamples}>Load Sample Pirates</button>
 ```
 
@@ -1669,7 +1727,7 @@ Add to props:
 
 `<PirateForm addPirate={this.addPirate} loadSamples={this.loadSamples} />`:
 
-```
+```js
     return (
       <div className="App">
       <Header />
@@ -1683,12 +1741,11 @@ Add to props:
       )
 ```
 
-
 ### Remove Pirate
 
 New function in App:
 
-```
+```js
 removePirate(key){
   const pirates = {...this.state.pirates}
   delete pirates[key]
@@ -1698,13 +1755,13 @@ removePirate(key){
 
 Constructor in App:
 
-```
+```js
 this.removePirate = this.removePirate.bind(this)
 ```
 
 $r (App)
 
-```
+```js
 $r.removePirate('pirate1')
 ```
 
@@ -1713,12 +1770,12 @@ On Pirate in App `removePirate = {this.removePirate}`:
 <!-- Not yet: 
 `index={key}` -->
 
-```
+```js
 {
   Object
   .keys(this.state.pirates)
-  .map( key => <Pirate key={key} 
-    details={this.state.pirates[key]} 
+  .map( key => <Pirate key={key}
+    details={this.state.pirates[key]}
     removePirate={this.removePirate} /> )
 }
 ```
@@ -1727,10 +1784,10 @@ PirateForm:
 
 `<button onClick={() => this.props.removePirate('pirate1')}>RemovePirate</button>`
 
-```
-<PirateForm 
-addPirate={this.addPirate} 
-removePirate={this.removePirate} 
+```js
+<PirateForm
+addPirate={this.addPirate}
+removePirate={this.removePirate}
 loadSamples={this.loadSamples} />
 ```
 
@@ -1738,7 +1795,7 @@ Try it on the individual pirates.
 
 Pirate.js:
 
-```
+```js
     return (
       <ul>
         <li>{details.name}</li>
@@ -1753,20 +1810,20 @@ You cannot access the key inside a component
 
 Pass it along as part of the Pirate component `index={key}` in App:
 
-```
+```js
 {
   Object
   .keys(this.state.pirates)
-  .map( key => <Pirate key={key} 
+  .map( key => <Pirate key={key}
     index={key}
-    details={this.state.pirates[key]} 
+    details={this.state.pirates[key]}
     removePirate={this.removePirate} /> )
 }
 ```
 
-Pirate.js (only allowable elment as child of <ul> is <li>):
+Pirate.js (only allowable elment as child of `<ul>` is `<li>`):
 
-```
+```js
 return (
   <ul>
     <li>{details.name}</li>
@@ -1779,7 +1836,7 @@ return (
 
 ### Persisting the Data
 
-Create an account at https://firebase.google.com/
+Create an account at `https://firebase.google.com/`
 
 Create a new project called firstname-lastname-pirates
 
@@ -1787,7 +1844,7 @@ Go to the empty database (left hand menu)
 
 Go to rules:
 
-```
+```js
 {
   "rules": {
     ".read": "auth != null",
@@ -1796,7 +1853,7 @@ Go to rules:
 }
 ```
 
-```
+```js
 {
   "rules": {
     ".read": true,
@@ -1811,11 +1868,11 @@ App.js state.
 
 in src create `base.js`
 
-```
+```js
 import Rebase from 're-base'
 
 const base = Rebase.createClass({
-  
+
 })
 ```
 
@@ -1827,14 +1884,13 @@ In Firebase click on Overview > Add Firebase to your webapp
 
 We need:
 
-```
+```js
 apiKey: "AIzaSyAHnKw63CUBAqSuCREgils_waYJ0qwpGiU",
 authDomain: "daniel-deverell-pirates.firebaseapp.com",
 databaseURL: "https://daniel-deverell-pirates.firebaseio.com",
 ```
 
-
-```
+```js
 import Rebase from 're-base'
 
 const base = Rebase.createClass({
@@ -1852,7 +1908,7 @@ Import into App.js
 
 Component Lifecycle: component will mount
 
-```
+```js
 componentWillMount(){
   this.ref = base.syncState(`daniel-deverell-pirates/pirates`, {
     context: this,
@@ -1861,7 +1917,7 @@ componentWillMount(){
 }
 ```
 
-```
+```js
 componentWillUmount(){
   base.removeBinding(this.ref)
 }
@@ -1871,7 +1927,7 @@ Load pirates and examine the Firebase HTML5 websockets
 
 To delete a pirate we need to accomodate Firebase:
 
-```
+```js
 removePirate(key){
   const pirates = {...this.state.pirates}
   pirates[key] = null
@@ -1879,9 +1935,9 @@ removePirate(key){
 }
 ```
 
-Pirate.j
+Pirate.js
 
-```
+```js
 const myColor = '#C90813'
 
 const myStyle={
@@ -1889,16 +1945,15 @@ const myStyle={
 }
 ```
 
-
 ### Routing
 
-https://reacttraining.com/react-router/web/guides/quick-start
+`https://reacttraining.com/react-router/web/guides/quick-start`
 
 `> npm install react-router-dom --save`
 
 index.js
 
-```
+```js
 import {
   BrowserRouter as Router,
   Route
@@ -1961,7 +2016,7 @@ class Main extends React.Component {
 }
 ```
 
-We probably want the routing to occur in App.js to keep the header and replace <Pirate /> and PirateForm />
+We probably want the routing to occur in App.js to keep the header and replace `<Pirate />` and `<PirateForm />`
 
 ### Validation Homework
 
@@ -1991,7 +2046,7 @@ button[disabled] {
 }
 ```
 
-https://www.w3schools.com/csSref/playit.asp?filename=playcss_cursor&preval=not-allowed
+`https://www.w3schools.com/csSref/playit.asp?filename=playcss_cursor&preval=not-allowed`
 
 Give the input a name. Add a paragraph with ng-show conditions.
 
@@ -2007,7 +2062,7 @@ Give the input a name. Add a paragraph with ng-show conditions.
 </div>
 ```
 
-Note the svg. 
+Note the svg.
 
 ```css
 .error {
@@ -2029,7 +2084,7 @@ input {
 }
 ```
 
-https://www.sitepoint.com/closer-look-svg-path-data/
+`https://www.sitepoint.com/closer-look-svg-path-data/`
 
 Ref: this video from [frontend.center](https://www.youtube.com/watch?v=af4ZQJ14yu8).
 
@@ -2097,4 +2152,4 @@ input:focus + .icon {
 }
 ```
 
-See https://www.w3schools.com/angular/angular_validation.asp for a complete set of examples for Angular validation.
+See `https://www.w3schools.com/angular/angular_validation.asp` for a complete set of examples for Angular validation.

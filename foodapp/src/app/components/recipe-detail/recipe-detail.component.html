@@ -4,31 +4,50 @@
     <img style="max-width: 30%" src="assets/home/{{ recipe.image }}" />
     <p>{{ recipe.description }}</p>
     <button (click)="back()">Back</button>
+    <button (click)="toggleForm()">Edit</button>
   </div>
 </div>
 
-<div class="form-wrapper">
-  <form action="#" method="post" >
+<div *ngIf="formEnabled">
+  <div *ngIf="recipe">
+    <div class="form-wrapper">
+      <form (submit)="editRecipe()">
 
-    <fieldset>
-      <legend>Edit Recipe</legend>
-      <ol>
-        <li>
-          <label for="name">Recipe Title</label>
-          <input [(ngModel)]="recipe.title" type="text" name="name" required placeholder="Recipe Name" />
-        </li>
-        <li>
-          <label for="image">Image</label>
-          <input [(ngModel)]="recipe.image" type="text" name="image" required placeholder="Image Name" />
-        </li>
-        <li>
-          <label for="description">Recipe Description</label>
-          <textarea [(ngModel)]="recipe.description" name="description" required></textarea>
-        </li>
-        <li>
-          <input type="submit" value="Update Recipe" />
-        </li>
-      </ol>
-    </fieldset>
-  </form>
+        <fieldset>
+          <legend>Edit Recipe</legend>
+          <ol>
+            <li>
+              <label for="name">Recipe Name</label>
+            
+              <input
+              [(ngModel)]="recipe.title"
+              #recipeTitle="ngModel"
+              minlength="2"
+              type="text"
+              name="name"
+              required
+              placeholder="Recipe Name" />
+            
+              <div *ngIf="recipeTitle.errors?.required && recipeTitle.touched" class="alert">Title is required</div>
+              <div *ngIf="recipeTitle.errors?.minlength && recipeTitle.touched" class="alert">Recipe title should be longer</div>
+            
+            </li>
+            <li>
+              <label for="image">Image</label>
+              <input [(ngModel)]="recipe.image" type="text" name="image" required placeholder="Image Name" />
+            </li>
+            <li>
+              <label for="description">Recipe Description</label>
+              <textarea [(ngModel)]="recipe.description" name="description" required></textarea>
+            </li>
+            <li>
+              <input type="submit" value="Update Recipe" />
+            </li>
+          </ol>
+        </fieldset>
+      </form>
+      <button (click)="deleteRecipe()">Delete</button>
+      <button (click)="toggleForm()">Cancel</button>
+    </div>
+    </div>
 </div>

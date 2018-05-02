@@ -17,16 +17,27 @@ export class RecipeDetailComponent implements OnInit {
   formEnabled: boolean;
 
   constructor(public dataService: DataService, public route: ActivatedRoute) {
-    this.formEnabled = false;
+    this.formEnabled = true;
     this.id = this.route.snapshot.params['id'];
   }
 
-  // constructor(public dataService: DataService, public route: ActivatedRoute) {
-  // 	this.id = this.route.snapshot.params['id'];
-  // }
+  async editRecipe(){
+    console.log(this.recipe)
+    const response = await this.dataService.putRecipe(this.recipe);
+    this.formEnabled = false;
+  }
 
   back(){
   	window.history.back();
+  }
+
+  toggleForm() {
+    this.formEnabled = !this.formEnabled;
+  }
+
+  async deleteRecipe(){
+    const response = await this.dataService.deleteRecipe(this.recipe)
+    window.history.back();
   }
 
   async ngOnInit() {
