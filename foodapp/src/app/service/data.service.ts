@@ -22,6 +22,19 @@ export class DataService {
     return this.http.get('http://localhost:3006/api/recipe/' + id).toPromise()
   }
 
+  putRecipe(recipe) {
+    console.log('service ' + recipe)
+    return this.http.put('http://localhost:3006/api/recipe/' + recipe._id, recipe).toPromise()
+  }
+
+  deleteRecipe(recipe){
+    return this.http.delete('http://localhost:3006/api/recipe/' + recipe._id).toPromise();
+  }
+
+  addRecipe(recipe){
+    return this.http.post('http://localhost:3006/api/recipe/', recipe).toPromise();
+  }
+
   constructor(private http: Http) {
   }
 
